@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/styles.css">
+    <title>Payment</title>
+    <script>
+        (function(a,t,c,l,o,u,d){a['_genesysJourneySdk']=o;a[o]=a[o]||function(){
+        (a[o].q=a[o].q||[]).push(arguments)},a[o].l=1*new Date();u=t.createElement(c),
+        d=t.getElementsByTagName(c)[0];u.async=1;u.src=l;u.charset='utf-8';d.parentNode.insertBefore(u,d)
+        })(window, document, 'script', 'https://apps.usw2.pure.cloud/journey/sdk/js/web/v1/ac.js', 'ac');
+        ac('init', '15ebb043-cf55-4ff7-9343-f0d2023f8ecb', { region: 'usw2' });
+        ac('pageview');
+      </script>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/insurance">Insurance Plans</a></li>
+                <li><a href="/health-checkups">Health Checkups</a></li>
+                <li><a href="/health-drinks">Health Drinks</a></li>
+                <li><a href="/cart">Cart</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h1>Payment</h1>
+        <button id="pay-credit-card">Pay with Credit Card</button>
+        <button id="pay-debit-card">Pay with Debit Card</button>
+        <button id="pay-upi">Pay with UPI</button>
+        <p id="message"></p>
+    </main>
+
+    <script>
+        document.getElementById('pay-credit-card').addEventListener('click', () => processPayment('credit-card'));
+        document.getElementById('pay-debit-card').addEventListener('click', () => processPayment('debit-card'));
+        document.getElementById('pay-upi').addEventListener('click', () => processPayment('upi'));
+
+        function processPayment(method) {
+            const messageElement = document.getElementById('message');
+            messageElement.textContent = 'Processing payment...';
+
+            fetch('/api/process-payment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ method })
+            })
+            .then(response => response.json())
+            .then(data => {
+                messageElement.textContent = 'Payment successful';
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 2000);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                messageElement.textContent = 'Payment failed';
+            });
+        }
+    </script>
+</body>
+</html>
